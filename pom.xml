@@ -1,133 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
-    <!-- 项目基本信息 -->
-    <groupId>com.example</groupId>
-    <artifactId>my-application</artifactId>
-    <version>1.0.0</version>
+
+    <groupId>Dream</groupId>
+    <artifactId>Dream</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    
-    <name>My Application</name>
-    <description>使用lib目录下所有jar作为依赖的示例项目</description>
-    
-    <!-- 属性配置 -->
+
+    <name>Dream</name>
+
     <properties>
+        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    
-    <!-- 项目依赖 -->
-    <dependencies>
-        <!-- ========== 方法一：系统作用域方式 ========== -->
-             
-        <dependency>
-            <groupId>io.papermc.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.21.11-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-         </dependency>
-    </dependencies>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.6.0</version>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.example.Main</mainClass>
-                            <!-- 设置classpath包含lib目录 -->
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                        </manifest>
-                    </archive>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-lib</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
+                            <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>lib</directory>
-                                    <filtering>false</filtering>
-                                    <includes>
-                                        <include>**/*.jar</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.6.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <!-- 包含系统作用域的依赖 -->
+                            <includeSystemScope>true</includeSystemScope>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
+
     <repositories>
         <repository>
-            <id>codemc</id>
-            <url>https://repo.codemc.io/repository/maven-public/</url>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
-         <repository>
-         <id>papermc</id>
-      <url>https://repo.papermc.io/repository/maven-public/</url>
-    </repository>
     </repositories>
+
+    <dependencies>
+        <!-- Paper API 依赖 -->
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.21.11-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- FoliaCompatibleAPI 本地依赖 -->
+        <dependency>
+            <groupId>com.github.technicallycoded</groupId>
+            <artifactId>foliacompatibleapi</artifactId>
+            <version>1.2.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/FoliaCompatibleAPI-1.2.0.jar</systemPath>
+        </dependency>
+
+        <!-- PlaceholderAPI 本地依赖 -->
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/PlaceholderAPI-2.11.3.jar</systemPath>
+        </dependency>
+
+        <!-- PlayerPointsAPI 本地依赖 -->
+        <dependency>
+            <groupId>org.black_ixx</groupId>
+            <artifactId>playerpointsapi</artifactId>
+            <version>3.1.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/PlayerPointsAPI-3.1.1.jar</systemPath>
+        </dependency>
+
+        <!-- VaultAPI 本地依赖 -->
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/VaultAPI-1.7.1.jar</systemPath>
+        </dependency>
+    </dependencies>
 </project>
