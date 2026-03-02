@@ -31,6 +31,12 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -555,7 +561,24 @@ public class LiteTeleport extends JavaPlugin implements Listener {
         }
         tpList.put(target.getUniqueId(), new TeleportRequest(player));
         target.sendMessage(Language.replaceArgs(Language.commandTpaTarget, player.getDisplayName()));
-        sendRequestMsg(player, target);
+        Component acceptComponent = Component.text("[接受]")
+            .color(NamedTextColor.GREEN)
+            .decorate(TextDecoration.BOLD)
+            .clickEvent(ClickEvent.runCommand("/tpaccept"));
+        
+        Component denyComponent = Component.text("[拒绝]")
+            .color(NamedTextColor.RED)
+            .decorate(TextDecoration.BOLD)
+            .clickEvent(ClickEvent.runCommand("/tpadeny"));
+        
+        Component finalMessage = Component.text()
+            .append(Component.text(player.getDisplayName() + " 发给您传送邀请\n", NamedTextColor.WHITE))
+            .append(acceptComponent)
+            .append(Component.text(" "))
+            .append(denyComponent)
+            .build();
+    
+        target.sendMessage(finalMessage);
     }
 
     private void commandTpacancel(Player player) {
