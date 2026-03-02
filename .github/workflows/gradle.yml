@@ -20,9 +20,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
-          cache: gradle  # 缓存 Gradle 依赖，加速构建
 
       # 3. 赋予 Gradle 执行权限（Linux/macOS 必需）
       - name: Make gradlew executable
