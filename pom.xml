@@ -125,5 +125,4 @@
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
     </repositories>
-    </developers>
 </project>
